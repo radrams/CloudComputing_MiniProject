@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Welcome</title>
+<link rel="stylesheet" href={{ url_for('static', filename='css/home.css') }} />
+<link rel="stylesheet" href={{ url_for('static', filename='css/topStyle.css') }} />
+</head>
+<body>
+<div id="title">
+	<a href="/">
+		<img id="logo" src= {{ url_for('static', filename='images/logo.png') }} />
+	</a>
+	<form>
+		<input id="searchBox" type="text" name="searchQuery" placeholder=" Search Books...">
+		<input id="searchButton" type="submit" value="Search">
+	</form>
+
+	{% if not loggedIn %}
+	<div id="signInButton">
+		<a class="link" href="/loginForm">Sign In</a>
+	</div>
+	{% else %}
+	<div class="dropdown">
+		<button class="dropbtn">Hello, <br>{{firstName}}</button>
+		<div class="dropdown-content">
+			<a href="/account/orders">Your orders</a>
+			<a href="/account/profile">Your profile</a>
+			<hr>
+			<a href="/logout">Sign Out</a>
+		</div>
+	</div>
+	{% endif %}
+	<div id="kart">
+		<a class="link" href="/cart">
+			<img src={{url_for('static', filename='images/shoppingCart.png')}} id="cartIcon" />
+			CART ({{noOfItems}})
+		</a>
+	</div>
+</div>
+
+<div id="utils">
+	<div id="weather">
+		<h2>Current weather</h2>  
+		<p><b>City: {{weather.city}}</b></p>  
+		<p><b>{{weather.description}} | {{weather.temperature}} &deg;C</b></p>  
+	</div>
+	<div id="currency">
+		<h2>Exchange Rate</h2>	
+		<p ><b>1 {{currency_from}} = {{rate_usd}} {{currency_to_usd}}</b></p>  
+		<p ><b>1 {{currency_from}} = {{rate_eur}} {{currency_to_eur}}</b></p>  
+	</div>
+	<br></br> 
+</div>
+
+<div class="display">
+	<div class="displayCategory">
+		<h2>Shop by Category: </h2>
+		<ul>
+			{% for row in categoryData %}
+			<li><a href="/displayCategory?categoryId={{row[0]}}">{{row[1]}}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div>
+		<h2>Items</h2>		
+		<table>
+			<tr id="productName">
+				{% for row in itemData %}
+				<td>
+					{{row[1]}}
+				</td>
+				{% endfor %}
+			</tr>
+			<tr id="productImage">
+				{% for row in itemData %}
+				<td>
+					<a href="/productDescription?productId={{row[0]}}">
+						<img src={{ url_for('static', filename='uploads/' + row[4]) }} id="itemImage" />
+					</a>
+				</td>
+				{% endfor %}
+			</tr>
+			<tr id="productPrice">
+				{% for row in itemData %}
+				<td>
+					£{{row[2]}}
+				</td>
+				{% endfor %}
+			</tr>
+		</table>
+	</div>
+</div>
+</body>
+</html>
+

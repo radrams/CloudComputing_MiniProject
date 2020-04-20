@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ebookshop-deployment
+  labels:
+    app: ebookshop_app_image
+spec:
+  selector:
+    matchLabels:
+      app: ebookshop_app_image
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: ebookshop_app_image
+    spec:
+      containers:
+      - name: ebookshop
+        image: localhost:32000/ebookshop_app_image:registry
+        ports:
+        - containerPort: 443

@@ -1,0 +1,9 @@
+﻿werkzeug
+pip>=9.0.1
+flask>=0.12.3
+cassandra-driver
+passlib
+flask_httpauth
+uuid
+requests
+pyOpenSSL
