@@ -136,7 +136,6 @@ There are **three external APIs** used to complement the functionality of the ap
    can be performed only by ‘admin.
 
 
-
 ## **Kubernetes Load Balancing**
 
  1. I have used MicroK8s which is an upstream Kubernetes deployment that runs entirely on the local workstation. Install it using the command inside AWS EC2 instance:
@@ -170,11 +169,11 @@ There are **three external APIs** used to complement the functionality of the ap
 
  10. Create a service and expose the deployment to internet
 	**sudo microk8s.kubectl expose deployment ebookshop-deployment --port=443 --type=LoadBalancer**
-	![3 MicroK8s Pods Running for the deployment](C:%5CUsers%5Cradha%5COneDrive%5CSEMESTER_B%5CCloudComputing%5CCoursework%5Cimg1.png)
+	![Image of MicroK8s Services](https://i.ibb.co/HVY7ZKY/img1.png)
 
  11. View the services running and note down the external port number
 	**sudo microk8s.kubectl get services**	
-	![MicroK8s Services](!(C:%5CUsers%5Cradha%5COneDrive%5CSEMESTER_B%5CCloudComputing%5CCoursework%5Cimg2.png))
+	![MicroK8s Services](https://i.ibb.co/dLpJJDC/img2.png)
 
  12. Open the application in the browser using AWS public DNS or IP address and external port number of the service
  
