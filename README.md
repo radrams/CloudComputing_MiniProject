@@ -60,18 +60,60 @@ As part of this mini project I have designed a simple **Online Book Shopping app
 
 ## **Cassandra Database Initialization:**
 
-The Cassandra cloud database is populated using the application script (ebookshop.py). The initialization script runs before every first request to the application, implemented using the Flask tag **@app.before_first_request**. It will populate the data for 'Users', 'Categories' and 'Products' tables.
+The Cassandra cloud database is populated using the application script (ebookshop.py). The initialization script runs before every first request to the application, implemented using the Flask tag **@app.before_first_request**. It will populate the base data for 'Users', 'Categories' and 'Products' tables.
 
 ## **External APIs used:**
 
 There are **three external APIs** used to complement the functionality of the application.
 
- - **ipinfo** - IP geolocation API to get the current location of the IP address          
+ 1. **ipinfo** - IP geolocation API to get the current location of the IP address
+
+
+	 **Request:**
+		 [http://ipinfo.io/json](http://ipinfo.io/json)		
+		 
+
+	 **Reponse:**
+	 {
+  "region": "England",
+  "country": "GB",
+  "loc": "51.5085,-0.1257",
+  "postal": "EC1A",
+  "timezone": "Europe/London",
+  "readme": "https://ipinfo.io/missingauth"
+}
+
  - **openweathermap** - To get the current weather data for the current location detected. This information is displayed in the home
-        page        
+        page         
+        
+    **URL:** http://api.openweathermap.org/
+    
+    **Request:**
+    /data/2.5/weather?q={}&units=metric&appid={}
+    
+    **Response:**
+    {"coord":{"lon":-0.13,"lat":51.51},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04n"}],"base":"stations","main":{"temp":9.99,"feels_like":4.47,"temp_min":8.33,"temp_max":11.11,"pressure":1016,"humidity":61},"visibility":10000,"wind":{"speed":5.7,"deg":70},"clouds":{"all":72},"dt":1587434760,"sys":{"type":1,"id":1502,"country":"GB","sunrise":1587444670,"sunset":1587496005},"timezone":3600,"id":2643743,"name":"London","cod":200}
+        
  -  **openexchangerates** – To get the live exchange rates for GBP to USD and EUR. Again, this information is displayed in the home
         page
-<![endif]-->
+        
+    **URL:** https://openexchangerates.org/
+    
+    **Request:** /api/latest.json?app_id={}
+    
+    **Response:**
+        {
+  "disclaimer": "Usage subject to terms: https://openexchangerates.org/terms",
+  "license": "https://openexchangerates.org/license",
+  "timestamp": 1587434400,
+  "base": "USD",
+  "rates": {	
+    "EUR": 0.921927,
+    "GBP": 0.805256,   
+    "USD": 1
+  }
+}
+
 
 ## **Cloud Security Measures:**
 
@@ -93,40 +135,47 @@ There are **three external APIs** used to complement the functionality of the ap
    operations. This is implemented inside the API endpoints. Eg. addItem
    can be performed only by ‘admin.
 
+
 ## **Kubernetes Load Balancing**
 
-1. I have used MicroK8s which is an upstream Kubernetes deployment that runs entirely on the local workstation. Install it using the command inside AWS EC2 instance:
+ 1. I have used MicroK8s which is an upstream Kubernetes deployment that runs entirely on the local workstation. Install it using the command inside AWS EC2 instance:
 	**sudo snap install microk8s -classic**
 
-2. Enable registry with the following command:
+ 2. Enable registry with the following command:
 	**sudo microk8s enable registry**
 
-3. To upload images to MicroK8s, we have to tag them with localhost:32000/image-name before pushing them:
+ 3. To upload images to MicroK8s, we have to tag them with localhost:32000/image-name before pushing them:
 	**sudo docker tag 4e7eeee3e994 localhost:32000/ebookshop_app_image:registry**
 
-4. Now that the image is tagged, it can be pushed to the registry:
+ 4. Now that the image is tagged, it can be pushed to the registry:
 	**sudo docker push localhost:32000/ebookshop_app_image**
 
-5. Edit **/etc/docker/daemon.json** and add:
+ 5. Edit **/etc/docker/daemon.json** and add:
 	**{**
 	**"insecure-registries" : ["localhost:32000"]**
 	**}**
 
-6. The new configuration should be loaded with a Docker daemon restart:
+ 6. The new configuration should be loaded with a Docker daemon restart:
 	**sudo systemctl restart docker**
 
-7. Deploy docker container image present in the registry using the command:
+ 7. Deploy docker container image present in the registry using the command:
 	**sudo microk8s.kubectl apply -f ./deployment.yaml**
 
-8. View deployment status
+ 8. View deployment status
 	**sudo microk8s.kubectl get deployment**
 	
-9. View the created kubernetes pods
+ 9. View the created kubernetes pods
 	**sudo microk8s.kubectl get pods**
 
-10. Create a service and expose the deployment to internet
+ 10. Create a service and expose the deployment to internet
 	**sudo microk8s.kubectl expose deployment ebookshop-deployment --port=443 --type=LoadBalancer**
+	![3 MicroK8s Pods Running for the deployment](https://ibb.co/VtDV6LD)
+
+ 11. View the services running and note down the external port number
 	**sudo microk8s.kubectl get services**
+	![MicroK8s Services](https://ibb.co/D8MggQc)
+
+ 11. Open the application in the browser using AWS public DNS or IP address and external port number of the service
 
 
 ## **API Endpoints:**
